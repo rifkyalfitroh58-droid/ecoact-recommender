@@ -7,7 +7,11 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+users   = pd.read_csv(os.path.join(BASE_DIR, "data", "users.csv"))
+actions = pd.read_csv(os.path.join(BASE_DIR, "data", "actions_processed.csv"))
 # ── Load data ─────────────────────────────────────────────────────────────────
 users   = pd.read_csv("data/users.csv")
 actions = pd.read_csv("data/actions_processed.csv")

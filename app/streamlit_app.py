@@ -7,8 +7,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
-from app.recommender import recommend
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from recommender import recommend
 
 # ── Config ────────────────────────────────────────────────────────────────────
 st.set_page_config(
