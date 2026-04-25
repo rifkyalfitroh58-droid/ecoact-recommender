@@ -39,7 +39,7 @@ def build_user_item_matrix():
     return matrix
 
 # ── CF Recommender ────────────────────────────────────────────────────────────
-def cf_recommend(user_profile: dict, top_n: int = 3, k_neighbors: int = 20):
+def cf_recommend(user_profile: dict, top_n: int = 3, k_neighbors: int = 20, env_modifiers: dict = None):
     """
     Rekomendasikan aksi menggunakan User-Based CF.
 
@@ -121,6 +121,12 @@ def cf_recommend(user_profile: dict, top_n: int = 3, k_neighbors: int = 20):
             "co2_hemat_kg_per_bulan": act["co2_hemat_kg_per_bulan"],
             "cf_score"              : round(cf_scores.get(aid, 0.0) * 100, 1),
         })
+
+    # Terapkan env modifier ke setiap aksi
+    for r in result_rows:
+        mod = env_modifiers.get(r["action_id"], 1.0) if env_modifiers else 1.0
+        r["cf_score"]     = round(r["cf_score"] * mod, 1)
+        r["env_modifier"] = round(float(mod), 2)
 
     df = pd.DataFrame(result_rows)
     df = df.sort_values("cf_score", ascending=False).head(top_n).reset_index(drop=True)
