@@ -1,0 +1,16 @@
+action_id,nama_aksi,kategori,co2_hemat_kg_per_bulan,cocok_transportasi,cocok_listrik,cocok_makan,co2_norm
+A01,Beralih ke transportasi umum,transportasi,42.0,angkot/bus,rendah,campuran,1.0
+A02,Carpooling / nebeng bareng,transportasi,28.0,mobil,rendah,campuran,0.65
+A03,Gunakan sepeda untuk jarak dekat,transportasi,15.0,sepeda,rendah,campuran,0.325
+A04,Kurangi konsumsi daging merah,makanan,20.0,motor,rendah,banyak_daging,0.45
+A05,Pilih diet plant-based 3x seminggu,makanan,16.0,motor,rendah,banyak_daging,0.35000000000000003
+A06,Matikan lampu & cabut charger idle,energi,5.0,kos,tinggi,campuran,0.075
+A07,Ganti lampu ke LED hemat energi,energi,8.0,rumah_pribadi,tinggi,campuran,0.15000000000000002
+A08,Pasang solar panel skala rumah,energi,35.0,rumah_pribadi,tinggi,campuran,0.825
+A09,Pisahkan sampah daur ulang,sampah,6.0,kos,sedang,campuran,0.10000000000000002
+A10,Gunakan tas belanja kain,sampah,2.0,kos,sedang,campuran,0.0
+A11,Kurangi penggunaan AC 1 jam/hari,energi,12.0,apartemen,tinggi,campuran,0.25000000000000006
+A12,Beli produk lokal & musiman,konsumsi,4.0,kota_besar,rendah,campuran,0.05
+A13,Hemat air mandi (shower < 5 menit),air,3.0,kos,tinggi,campuran,0.02500000000000001
+A14,Composting sampah organik,sampah,5.0,rumah_pribadi,sedang,banyak_daging,0.075
+A15,Tanam pohon / tanaman di rumah,alam,7.0,rumah_pribadi,rendah,vegetarian,0.125
