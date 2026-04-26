@@ -11,8 +11,8 @@ from datetime import date, timedelta
 
 st.set_page_config(page_title="Progress Tracker — EcoAct", page_icon="📊", layout="wide")
 
-from storage import get_user_stats, get_leaderboard, log_action, get_user, load_all, save_all
-from badges  import award_badges, get_badge_progress, BADGE_MAP, ALL_BADGES
+from app import get_user_stats, get_leaderboard, log_action, get_user, load_all, save_all
+from app.badges import award_badges, get_badge_progress, BADGE_MAP, ALL_BADGES
 
 st.markdown("""
 <style>
