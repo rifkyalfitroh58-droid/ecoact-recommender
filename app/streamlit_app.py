@@ -8,7 +8,7 @@ import sys, os
 from datetime import date, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from recommender    import recommend
+from recommender    import recommend, actions as all_actions
 from cf_recommender import cf_recommend
 from weather_api    import fetch_env_data
 from env_context    import get_env_context
@@ -154,6 +154,24 @@ with tab1:
                 format_func=lambda x: {"kota_besar":"🏙️ Kota Besar","kota_kecil":"🌆 Kota Kecil","pedesaan":"🌾 Pedesaan"}[x])
             top_n = st.slider("📊 Jumlah rekomendasi", 2, 5, 3)
 
+with st.expander("🔍 Filter Aksi (Opsional)", expanded=False):
+    fc1, fc2, fc3, fc4 = st.columns(4)
+    with fc1:
+        filter_kesulitan = st.multiselect("Kesulitan",["mudah","sedang","sulit"],
+            default=["mudah","sedang","sulit"],
+            format_func=lambda x:{"mudah":"🟢 Mudah","sedang":"🟡 Sedang","sulit":"🔴 Sulit"}[x])
+    with fc2:
+        filter_biaya = st.multiselect("Biaya",["gratis","murah","investasi"],
+            default=["gratis","murah","investasi"],
+            format_func=lambda x:{"gratis":"🆓 Gratis","murah":"💰 Murah","investasi":"💳 Investasi"}[x])
+    with fc3:
+        filter_waktu = st.multiselect("Waktu",["harian","mingguan","bulanan","sekali"],
+            default=["harian","mingguan","bulanan","sekali"],
+            format_func=lambda x:{"harian":"📅 Harian","mingguan":"📆 Mingguan","bulanan":"🗓️ Bulanan","sekali":"⚡ Sekali"}[x])
+    with fc4:
+        semua_kat = sorted(all_actions["kategori"].unique().tolist())
+        filter_kategori = st.multiselect("Kategori",semua_kat,default=semua_kat)
+
     if st.button("🌱 Tampilkan & Bandingkan Rekomendasiku"):
         profile = {"transportasi":transportasi,"tempat_tinggal":tempat_tinggal,
                    "konsumsi_listrik":konsumsi_listrik,"pola_makan":pola_makan,"lokasi_kota":lokasi_kota}
@@ -162,8 +180,17 @@ with tab1:
             env_data            = fetch_env_data(lokasi_kota)
             env_score, env_mods = get_env_context(env_data)
         with st.spinner("Menjalankan dua model..."):
-            cb_recs = recommend(**profile, top_n=top_n, env_modifiers=env_mods)
+            cb_recs = recommend(**profile, top_n=top_n, env_modifiers=env_mods,
+                            filter_kesulitan=filter_kesulitan if filter_kesulitan else None,
+                            filter_biaya=filter_biaya if filter_biaya else None,
+                            filter_waktu=filter_waktu if filter_waktu else None,
+                            filter_kategori=filter_kategori if filter_kategori else None)
             cf_recs = cf_recommend(profile, top_n=top_n, env_modifiers=env_mods)
+
+        if cb_recs is None or cb_recs.empty:
+            st.warning("Tidak ada aksi yang cocok dengan filter yang dipilih. Coba longgarkan filter kesulitan, biaya, waktu, atau kategori.")
+            st.stop()
+
         st.session_state["cb_recs"]   = cb_recs
         st.session_state["cf_recs"]   = cf_recs
         st.session_state["env_data"]  = env_data
@@ -207,10 +234,16 @@ with tab1:
             for i, row in cb_recs.iterrows():
                 cc = cat_cls.get(row["kategori"],"k-alam")
                 total_cb += row["co2_hemat_kg_per_bulan"]
+                kes_emoji = {"mudah":"🟢","sedang":"🟡","sulit":"🔴"}.get(row.get("kesulitan",""),"")
+                biaya_emoji = {"gratis":"🆓","murah":"💰","investasi":"💳"}.get(row.get("biaya",""),"")
+                waktu_emoji = {"harian":"📅","mingguan":"📆","bulanan":"🗓️","sekali":"⚡"}.get(row.get("waktu",""),"")
+                subkat = row.get("sub_kategori","")
                 st.markdown(f"""<div class="rec-card-cb">
                     <div class="rec-rank-cb">#{i+1} · {row['skor_relevansi']}% &nbsp;{mod_b(row['env_modifier'])}</div>
                     <div class="rec-name">{row['nama_aksi']}<span class="chip {cc}">{row['kategori'].upper()}</span></div>
+                    <div style="font-size:.7rem;color:#888;margin:3px 0">{subkat.replace('_',' ')}</div>
                     <span class="co2-badge-cb">🌿 {row['co2_hemat_kg_per_bulan']} kg CO₂/bln</span>
+                    &nbsp;<span style="font-size:.7rem;color:#888">{kes_emoji} {row.get('kesulitan','')} &nbsp;{biaya_emoji} {row.get('biaya','')} &nbsp;{waktu_emoji} {row.get('waktu','')}</span>
                 </div>""", unsafe_allow_html=True)
                 if st.checkbox("✓ Sudah saya lakukan hari ini", key=f"cb_{row['action_id']}"):
                     log_action(username, row["action_id"], row["nama_aksi"], row["co2_hemat_kg_per_bulan"], row["kategori"])
@@ -226,10 +259,16 @@ with tab1:
             for i, row in cf_recs.iterrows():
                 cc = cat_cls.get(row["kategori"],"k-alam")
                 total_cf += row["co2_hemat_kg_per_bulan"]
+                kes_emoji2 = {"mudah":"🟢","sedang":"🟡","sulit":"🔴"}.get(row.get("kesulitan",""),"")
+                biaya_emoji2 = {"gratis":"🆓","murah":"💰","investasi":"💳"}.get(row.get("biaya",""),"")
+                waktu_emoji2 = {"harian":"📅","mingguan":"📆","bulanan":"🗓️","sekali":"⚡"}.get(row.get("waktu",""),"")
+                subkat2 = row.get("sub_kategori","")
                 st.markdown(f"""<div class="rec-card-cf">
                     <div class="rec-rank-cf">#{i+1} · {row['cf_score']}% &nbsp;{mod_b(row['env_modifier'])}</div>
                     <div class="rec-name">{row['nama_aksi']}<span class="chip {cc}">{row['kategori'].upper()}</span></div>
+                    <div style="font-size:.7rem;color:#888;margin:3px 0">{subkat2.replace('_',' ')}</div>
                     <span class="co2-badge-cf">🌿 {row['co2_hemat_kg_per_bulan']} kg CO₂/bln</span>
+                    &nbsp;<span style="font-size:.7rem;color:#888">{kes_emoji2} {row.get('kesulitan','')} &nbsp;{biaya_emoji2} {row.get('biaya','')} &nbsp;{waktu_emoji2} {row.get('waktu','')}</span>
                 </div>""", unsafe_allow_html=True)
                 if st.checkbox("✓ Sudah saya lakukan hari ini", key=f"cf_{row['action_id']}"):
                     log_action(username, row["action_id"], row["nama_aksi"], row["co2_hemat_kg_per_bulan"], row["kategori"])

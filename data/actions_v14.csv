@@ -1,0 +1,53 @@
+action_id,nama_aksi,kategori,sub_kategori,co2_hemat_kg_per_bulan,kesulitan,biaya,waktu,cocok_transportasi,cocok_listrik,cocok_makan,co2_norm,kesulitan_num,waktu_num
+A01,Beralih ke transportasi umum,transportasi,kendaraan_umum,42.0,sedang,gratis,harian,angkot/bus,sedang,campuran,0.8333333333333334,0.5,1.0
+A02,Carpooling / nebeng bareng,transportasi,kendaraan_umum,28.0,mudah,gratis,harian,mobil,sedang,campuran,0.5416666666666666,0.0,1.0
+A03,Gunakan sepeda untuk jarak dekat,transportasi,aktif,15.0,mudah,murah,harian,sepeda,rendah,campuran,0.2708333333333333,0.0,1.0
+A16,Jalan kaki untuk jarak < 1 km,transportasi,aktif,8.0,mudah,gratis,harian,jalan_kaki,rendah,campuran,0.125,0.0,1.0
+A17,Servis rutin kendaraan agar efisien,transportasi,kendaraan_pribadi,10.0,sedang,murah,bulanan,motor,sedang,campuran,0.16666666666666666,0.5,0.4
+A18,Matikan mesin saat parkir > 1 menit,transportasi,kendaraan_pribadi,5.0,mudah,gratis,harian,mobil,sedang,campuran,0.06249999999999999,0.0,1.0
+A19,Hindari jam macet — berangkat lebih awal,transportasi,kendaraan_pribadi,7.0,sedang,gratis,harian,motor,sedang,campuran,0.10416666666666666,0.5,1.0
+A20,Pertimbangkan kendaraan listrik / motor listrik,transportasi,kendaraan_listrik,50.0,sulit,investasi,sekali,mobil,tinggi,campuran,0.9999999999999999,1.0,0.3
+A21,Gabung komunitas sepeda / car-free day,transportasi,aktif,12.0,mudah,gratis,mingguan,sepeda,rendah,campuran,0.20833333333333334,0.0,0.7
+A06,Matikan lampu & cabut charger idle,energi,hemat_listrik,5.0,mudah,gratis,harian,motor,tinggi,campuran,0.06249999999999999,0.0,1.0
+A07,Ganti lampu ke LED hemat energi,energi,hemat_listrik,8.0,mudah,murah,sekali,motor,tinggi,campuran,0.125,0.0,0.3
+A08,Pasang solar panel skala rumah,energi,energi_terbarukan,35.0,sulit,investasi,sekali,mobil,tinggi,campuran,0.6875,1.0,0.3
+A11,Kurangi penggunaan AC 1 jam/hari,energi,hemat_listrik,12.0,mudah,gratis,harian,motor,tinggi,campuran,0.20833333333333334,0.0,1.0
+A22,Gunakan kipas angin sebagai pengganti AC,energi,hemat_listrik,18.0,mudah,murah,harian,motor,tinggi,campuran,0.3333333333333333,0.0,1.0
+A23,Cuci baju dengan air dingin,energi,hemat_listrik,4.0,mudah,gratis,mingguan,kos,sedang,campuran,0.041666666666666664,0.0,0.7
+A24,Cabut perangkat elektronik saat tidak dipakai,energi,hemat_listrik,6.0,mudah,gratis,harian,kos,tinggi,campuran,0.08333333333333334,0.0,1.0
+A25,Gunakan timer otomatis untuk perangkat listrik,energi,hemat_listrik,7.0,sedang,murah,sekali,kos,tinggi,campuran,0.10416666666666666,0.5,0.3
+A26,Pasang pemanas air surya,energi,energi_terbarukan,22.0,sulit,investasi,sekali,rumah_pribadi,tinggi,campuran,0.41666666666666663,1.0,0.3
+A27,Pilih peralatan rumah tangga berenergi rendah,energi,hemat_listrik,15.0,sedang,investasi,sekali,rumah_pribadi,tinggi,campuran,0.2708333333333333,0.5,0.3
+A04,Kurangi konsumsi daging merah,makanan,pola_makan,20.0,sedang,gratis,harian,motor,sedang,banyak_daging,0.37499999999999994,0.5,1.0
+A05,Pilih diet plant-based 3x seminggu,makanan,pola_makan,16.0,sedang,gratis,mingguan,motor,sedang,banyak_daging,0.29166666666666663,0.5,0.7
+A28,Masak sendiri daripada pesan makanan,makanan,kebiasaan_masak,9.0,sedang,gratis,harian,kos,sedang,campuran,0.14583333333333334,0.5,1.0
+A29,Kurangi food waste — habiskan makanan,makanan,kebiasaan_masak,8.0,mudah,gratis,harian,kos,sedang,campuran,0.125,0.0,1.0
+A30,Pilih produk ikan laut berkelanjutan,makanan,pola_makan,11.0,sedang,murah,mingguan,motor,sedang,campuran,0.1875,0.5,0.7
+A31,Kurangi konsumsi minuman dalam kemasan,makanan,kebiasaan_konsumsi,5.0,mudah,murah,harian,kos,sedang,campuran,0.06249999999999999,0.0,1.0
+A32,Simpan makanan dengan benar agar tidak terbuang,makanan,kebiasaan_masak,6.0,mudah,gratis,harian,kos,sedang,campuran,0.08333333333333334,0.0,1.0
+A33,Beli bahan makanan secukupnya — meal planning,makanan,kebiasaan_konsumsi,10.0,sedang,gratis,mingguan,kos,sedang,campuran,0.16666666666666666,0.5,0.7
+A09,Pisahkan sampah daur ulang,sampah,daur_ulang,6.0,mudah,gratis,harian,kos,sedang,campuran,0.08333333333333334,0.0,1.0
+A10,Gunakan tas belanja kain,sampah,kurangi_plastik,2.0,mudah,murah,harian,kos,sedang,campuran,0.0,0.0,1.0
+A14,Composting sampah organik,sampah,organik,5.0,sedang,murah,mingguan,rumah_pribadi,sedang,campuran,0.06249999999999999,0.5,0.7
+A34,Bawa tumbler / botol minum sendiri,sampah,kurangi_plastik,3.0,mudah,murah,harian,kos,sedang,campuran,0.020833333333333336,0.0,1.0
+A35,"Hindari produk sekali pakai (sedotan, piring plastik)",sampah,kurangi_plastik,4.0,mudah,gratis,harian,kos,sedang,campuran,0.041666666666666664,0.0,1.0
+A36,Jual / donasikan barang bekas daripada dibuang,sampah,daur_ulang,7.0,sedang,gratis,bulanan,kos,sedang,campuran,0.10416666666666666,0.5,0.4
+A37,Gunakan produk isi ulang (refill),sampah,kurangi_plastik,5.0,mudah,murah,mingguan,kos,sedang,campuran,0.06249999999999999,0.0,0.7
+A38,Cetak dokumen dua sisi (duplex printing),sampah,kertas,2.0,mudah,gratis,harian,kos,sedang,campuran,0.0,0.0,1.0
+A13,Hemat air mandi (shower < 5 menit),air,hemat_air,3.0,mudah,gratis,harian,kos,sedang,campuran,0.020833333333333336,0.0,1.0
+A39,Perbaiki keran yang bocor,air,hemat_air,8.0,sedang,murah,sekali,rumah_pribadi,sedang,campuran,0.125,0.5,0.3
+A40,Tampung air hujan untuk menyiram tanaman,air,konservasi_air,5.0,sedang,murah,mingguan,rumah_pribadi,rendah,campuran,0.06249999999999999,0.5,0.7
+A41,Matikan keran saat gosok gigi / cuci muka,air,hemat_air,2.0,mudah,gratis,harian,kos,sedang,campuran,0.0,0.0,1.0
+A42,Gunakan mesin cuci hanya saat penuh,air,hemat_air,4.0,mudah,gratis,mingguan,kos,sedang,campuran,0.041666666666666664,0.0,0.7
+A43,Daur ulang air bekas cucian untuk menyiram,air,konservasi_air,6.0,sedang,murah,harian,rumah_pribadi,rendah,campuran,0.08333333333333334,0.5,1.0
+A44,Pasang shower hemat air,air,hemat_air,7.0,sedang,murah,sekali,kos,sedang,campuran,0.10416666666666666,0.5,0.3
+A15,Tanam pohon / tanaman di rumah,alam,penghijauan,7.0,mudah,murah,mingguan,rumah_pribadi,rendah,vegetarian,0.10416666666666666,0.0,0.7
+A45,Ikut kegiatan penanaman pohon komunitas,alam,penghijauan,10.0,mudah,gratis,bulanan,jalan_kaki,rendah,campuran,0.16666666666666666,0.0,0.4
+A46,Buat taman mini / rooftop garden,alam,penghijauan,9.0,sedang,murah,mingguan,rumah_pribadi,rendah,campuran,0.14583333333333334,0.5,0.7
+A47,Dukung produk bersertifikat ramah lingkungan,alam,konservasi,6.0,mudah,murah,mingguan,kos,sedang,campuran,0.08333333333333334,0.0,0.7
+A48,Kurangi penggunaan pestisida kimia,alam,konservasi,4.0,sedang,gratis,mingguan,rumah_pribadi,rendah,campuran,0.041666666666666664,0.5,0.7
+A49,Buat lubang biopori di halaman,alam,konservasi,5.0,sedang,murah,sekali,rumah_pribadi,rendah,campuran,0.06249999999999999,0.5,0.3
+A12,Beli produk lokal & musiman,konsumsi,belanja_bijak,4.0,mudah,gratis,mingguan,kos,sedang,campuran,0.041666666666666664,0.0,0.7
+A50,Pilih produk dengan kemasan minimal,konsumsi,belanja_bijak,3.0,mudah,gratis,mingguan,kos,sedang,campuran,0.020833333333333336,0.0,0.7
+A51,Beli barang second-hand / preloved,konsumsi,circular_economy,12.0,sedang,murah,bulanan,kos,sedang,campuran,0.20833333333333334,0.5,0.4
+A52,Perbaiki barang rusak sebelum beli baru,konsumsi,circular_economy,8.0,sedang,murah,bulanan,kos,sedang,campuran,0.125,0.5,0.4
