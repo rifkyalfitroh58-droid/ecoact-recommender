@@ -471,7 +471,7 @@ with tab3:
     st.markdown("**Ringkasan Hasil @K=5**")
     sc1,sc2,sc3,sc4 = st.columns(4)
     for col, model in zip([sc1,sc2,sc3,sc4], models):
-        d = eval_results[model][5]
+        d = eval_results[model][str(5)]
         best = model == "CF"
         bg = "#EAF3DE" if best else "white"
         border = "#639922" if best else "#dce8d4"
@@ -490,7 +490,7 @@ with tab3:
 
     rows = []
     for model in models:
-        d = eval_results[model][k_sel]
+        d = eval_results[model][str(k_sel)]
         rows.append({
             "Model"    : model,
             "Precision": f"{d['precision']:.4f}",
@@ -515,7 +515,7 @@ with tab3:
     for ax, metric in zip(axes, ["precision","recall","f1"]):
         x = np.arange(len(k_vals)); w = 0.2
         for i, model in enumerate(models):
-            vals = [eval_results[model][k][metric] for k in k_vals]
+            vals = [eval_results[model][str(k)][metric] for k in k_vals]
             bars = ax.bar(x+i*w, vals, w, label=model, color=model_colors[model], alpha=0.85)
             for bar, v in zip(bars, vals):
                 ax.text(bar.get_x()+bar.get_width()/2, v+0.005, f"{v:.2f}",
@@ -535,7 +535,7 @@ with tab3:
 
     x = np.arange(len(k_vals)); w = 0.2
     for i, model in enumerate(models):
-        vals = [eval_results[model][k]["ndcg"] for k in k_vals]
+        vals = [eval_results[model][str(k)]["ndcg"] for k in k_vals]
         bars = axes2[0].bar(x+i*w, vals, w, label=model, color=model_colors[model], alpha=0.85)
         for bar,v in zip(bars,vals):
             axes2[0].text(bar.get_x()+bar.get_width()/2, v+0.005, f"{v:.2f}", ha="center", fontsize=7)
@@ -544,7 +544,7 @@ with tab3:
     axes2[0].set_ylim(0,1.05); axes2[0].spines[["top","right"]].set_visible(False)
     axes2[0].legend(fontsize=7, framealpha=0)
 
-    div_vals = [eval_results[m][5]["diversity"] for m in models]
+    div_vals = [eval_results[m][str(5)]["diversity"] for m in models]
     bars2 = axes2[1].bar(models, div_vals, color=[model_colors[m] for m in models], width=0.5, alpha=0.85)
     axes2[1].set_title("Diversity Score @K=5", fontsize=10, fontweight="bold")
     axes2[1].set_ylim(0,1.05); axes2[1].spines[["top","right"]].set_visible(False)
@@ -569,7 +569,7 @@ with tab3:
     mlabels = ["Precision","Recall","F1","NDCG","Diversity"]
     angles  = np.linspace(0, 2*np.pi, len(mlabels), endpoint=False).tolist() + [0]
     for model, color in [("CB","#1D9E75"),("CF","#27500A"),("Popularity","#378ADD")]:
-        vals = [eval_results[model][5][m.lower()] for m in mlabels] + [eval_results[model][5]["precision"]]
+        vals = [eval_results[model][str(5)][m.lower()] for m in mlabels] + [eval_results[model][str(5)]["precision"]]
         ax3.plot(angles, vals, "o-", linewidth=2, label=model, color=color)
         ax3.fill(angles, vals, alpha=0.08, color=color)
     ax3.set_xticks(angles[:-1]); ax3.set_xticklabels(mlabels, size=9)
@@ -585,9 +585,9 @@ with tab3:
     meta = eval_results["_meta"]
     st.markdown(f"Evaluasi dilakukan pada **{meta['n_users_evaluated']} user** dengan ground truth threshold **combined_score ≥ {meta['gt_threshold']}**.")
 
-    cf_ndcg = eval_results["CF"][5]["ndcg"]
-    cb_ndcg = eval_results["CB"][5]["ndcg"]
-    rnd_ndcg= eval_results["Random"][5]["ndcg"]
+    cf_ndcg = eval_results["CF"][str(5)]["ndcg"]
+    cb_ndcg = eval_results["CB"][str(5)]["ndcg"]
+    rnd_ndcg= eval_results["Random"][str(5)]["ndcg"]
     improvement = (cf_ndcg - cb_ndcg) / cb_ndcg * 100
 
     col_i1, col_i2 = st.columns(2)
