@@ -126,7 +126,7 @@ st.markdown('<hr class="divider">', unsafe_allow_html=True)
 # ══════════════════════════════════════════════════════
 # TAB
 # ══════════════════════════════════════════════════════
-tab1, tab2 = st.tabs(["🌱 Rekomendasi", "📊 Progress & Badge"])
+tab1, tab2, tab3 = st.tabs(["🌱 Rekomendasi", "📊 Progress & Badge", "🔬 Evaluasi Model"])
 
 # ══════════════════════════════════════════════════════
 # TAB 1 — REKOMENDASI
@@ -421,3 +421,179 @@ with tab2:
                 <span class="lb-co2">{u["total_co2_saved"]:.1f}kg</span>
                 <span class="lb-streak">🔥{u["streak"]}</span>
             </div>""", unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════
+# TAB 3 — EVALUASI MODEL
+# ══════════════════════════════════════════════════════
+with tab3:
+    import json, os as _os
+
+    st.markdown("### 🔬 Evaluasi Model — CB vs CF vs Random vs Popularity")
+    st.markdown("Framework evaluasi menggunakan **Precision@K, Recall@K, F1@K, NDCG@K, Coverage, dan Diversity** pada 100 user sampel dengan ground truth dari data interaksi.")
+
+    # Load atau jalankan evaluasi
+    eval_path = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "data", "eval_results.json")
+
+    col_run, col_info = st.columns([1,3])
+    with col_run:
+        run_eval = st.button("🔄 Jalankan Evaluasi Ulang", use_container_width=True)
+    with col_info:
+        st.caption("Evaluasi membutuhkan ~30 detik. Hasil terakhir ditampilkan otomatis.")
+
+    if run_eval:
+        with st.spinner("Mengevaluasi semua model... (~30 detik)"):
+            from evaluator import evaluate_all
+            eval_results = evaluate_all(k_values=[3,5,10], n_users=100)
+            with open(eval_path, "w") as f:
+                json.dump(eval_results, f, indent=2)
+            st.session_state["eval_results"] = eval_results
+            st.success("Evaluasi selesai!")
+
+    # Load hasil
+    if "eval_results" in st.session_state:
+        eval_results = st.session_state["eval_results"]
+    elif _os.path.exists(eval_path):
+        with open(eval_path) as f:
+            eval_results = json.load(f)
+    else:
+        st.info("Klik tombol di atas untuk menjalankan evaluasi pertama kali.")
+        st.stop()
+
+    models  = ["CB","CF","Random","Popularity"]
+    k_vals  = eval_results["_meta"]["k_values"]
+    metrics = ["precision","recall","f1","ndcg","diversity"]
+    metric_labels = {"precision":"Precision","recall":"Recall","f1":"F1","ndcg":"NDCG","diversity":"Diversity"}
+    model_colors  = {"CB":"#1D9E75","CF":"#27500A","Random":"#BA7517","Popularity":"#378ADD"}
+
+    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
+
+    # ── Stat cards ringkasan @K=5 ──────────────────────────────────────────
+    st.markdown("**Ringkasan Hasil @K=5**")
+    sc1,sc2,sc3,sc4 = st.columns(4)
+    for col, model in zip([sc1,sc2,sc3,sc4], models):
+        d = eval_results[model][5]
+        best = model == "CF"
+        bg = "#EAF3DE" if best else "white"
+        border = "#639922" if best else "#dce8d4"
+        col.markdown(f"""<div style="background:{bg};border:1.5px solid {border};border-radius:12px;padding:.9rem 1rem;text-align:center;">
+            <div style="font-size:.75rem;font-weight:700;color:{model_colors[model]};margin-bottom:4px">{model} {"⭐" if best else ""}</div>
+            <div style="font-size:1.3rem;font-weight:700;color:#1a3a1a">{d['ndcg']:.3f}</div>
+            <div style="font-size:.7rem;color:#888">NDCG@5</div>
+            <div style="font-size:.78rem;color:#444;margin-top:4px">P: {d['precision']:.3f} · R: {d['recall']:.3f}</div>
+        </div>""", unsafe_allow_html=True)
+
+    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
+
+    # ── Tabel detail semua metrik ──────────────────────────────────────────
+    st.markdown("**Tabel Lengkap Semua Metrik**")
+    k_sel = st.select_slider("Pilih K:", options=k_vals, value=5)
+
+    rows = []
+    for model in models:
+        d = eval_results[model][k_sel]
+        rows.append({
+            "Model"    : model,
+            "Precision": f"{d['precision']:.4f}",
+            "Recall"   : f"{d['recall']:.4f}",
+            "F1"       : f"{d['f1']:.4f}",
+            "NDCG"     : f"{d['ndcg']:.4f}",
+            "Diversity": f"{d['diversity']:.4f}",
+            "Coverage" : f"{eval_results['_coverage'][model]:.1%}",
+        })
+    df_eval = pd.DataFrame(rows).set_index("Model")
+    st.dataframe(df_eval, use_container_width=True)
+
+    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
+
+    # ── Chart Precision/Recall/F1 ──────────────────────────────────────────
+    st.markdown("**Precision, Recall, F1 per K**")
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    fig, axes = plt.subplots(1,3, figsize=(14,4))
+    fig.patch.set_facecolor("#FAFAFA")
+    for ax, metric in zip(axes, ["precision","recall","f1"]):
+        x = np.arange(len(k_vals)); w = 0.2
+        for i, model in enumerate(models):
+            vals = [eval_results[model][k][metric] for k in k_vals]
+            bars = ax.bar(x+i*w, vals, w, label=model, color=model_colors[model], alpha=0.85)
+            for bar, v in zip(bars, vals):
+                ax.text(bar.get_x()+bar.get_width()/2, v+0.005, f"{v:.2f}",
+                        ha="center", fontsize=7, fontweight="bold")
+        ax.set_title(f"{metric.upper()}@K", fontsize=10, fontweight="bold")
+        ax.set_xticks(x+w*1.5); ax.set_xticklabels([f"K={k}" for k in k_vals], fontsize=8)
+        ax.set_ylim(0,1.05); ax.spines[["top","right"]].set_visible(False)
+        ax.legend(fontsize=7, framealpha=0)
+    plt.tight_layout()
+    st.pyplot(fig)
+    plt.close()
+
+    # ── Chart NDCG + Diversity + Coverage ─────────────────────────────────
+    st.markdown("**NDCG, Diversity, dan Coverage**")
+    fig2, axes2 = plt.subplots(1,3, figsize=(14,4))
+    fig2.patch.set_facecolor("#FAFAFA")
+
+    x = np.arange(len(k_vals)); w = 0.2
+    for i, model in enumerate(models):
+        vals = [eval_results[model][k]["ndcg"] for k in k_vals]
+        bars = axes2[0].bar(x+i*w, vals, w, label=model, color=model_colors[model], alpha=0.85)
+        for bar,v in zip(bars,vals):
+            axes2[0].text(bar.get_x()+bar.get_width()/2, v+0.005, f"{v:.2f}", ha="center", fontsize=7)
+    axes2[0].set_title("NDCG@K", fontsize=10, fontweight="bold")
+    axes2[0].set_xticks(x+w*1.5); axes2[0].set_xticklabels([f"K={k}" for k in k_vals], fontsize=8)
+    axes2[0].set_ylim(0,1.05); axes2[0].spines[["top","right"]].set_visible(False)
+    axes2[0].legend(fontsize=7, framealpha=0)
+
+    div_vals = [eval_results[m][5]["diversity"] for m in models]
+    bars2 = axes2[1].bar(models, div_vals, color=[model_colors[m] for m in models], width=0.5, alpha=0.85)
+    axes2[1].set_title("Diversity Score @K=5", fontsize=10, fontweight="bold")
+    axes2[1].set_ylim(0,1.05); axes2[1].spines[["top","right"]].set_visible(False)
+    for bar,v in zip(bars2,div_vals):
+        axes2[1].text(bar.get_x()+bar.get_width()/2, v+0.01, f"{v:.2f}", ha="center", fontsize=9, fontweight="bold")
+
+    cov_vals = [eval_results["_coverage"][m] for m in models]
+    bars3 = axes2[2].bar(models, cov_vals, color=[model_colors[m] for m in models], width=0.5, alpha=0.85)
+    axes2[2].set_title("Catalog Coverage @K=5", fontsize=10, fontweight="bold")
+    axes2[2].set_ylim(0,1.15); axes2[2].spines[["top","right"]].set_visible(False)
+    for bar,v in zip(bars3,cov_vals):
+        axes2[2].text(bar.get_x()+bar.get_width()/2, v+0.01, f"{v:.1%}", ha="center", fontsize=9, fontweight="bold")
+
+    plt.tight_layout()
+    st.pyplot(fig2)
+    plt.close()
+
+    # ── Radar Chart ────────────────────────────────────────────────────────
+    st.markdown("**Radar Chart — CB vs CF vs Popularity @K=5**")
+    fig3, ax3 = plt.subplots(1,1, figsize=(6,6), subplot_kw=dict(polar=True))
+    fig3.patch.set_facecolor("#FAFAFA")
+    mlabels = ["Precision","Recall","F1","NDCG","Diversity"]
+    angles  = np.linspace(0, 2*np.pi, len(mlabels), endpoint=False).tolist() + [0]
+    for model, color in [("CB","#1D9E75"),("CF","#27500A"),("Popularity","#378ADD")]:
+        vals = [eval_results[model][5][m.lower()] for m in mlabels] + [eval_results[model][5]["precision"]]
+        ax3.plot(angles, vals, "o-", linewidth=2, label=model, color=color)
+        ax3.fill(angles, vals, alpha=0.08, color=color)
+    ax3.set_xticks(angles[:-1]); ax3.set_xticklabels(mlabels, size=9)
+    ax3.set_ylim(0,1.0); ax3.legend(loc="upper right", bbox_to_anchor=(1.3,1.1), fontsize=9, framealpha=0)
+    ax3.grid(True, alpha=0.2)
+    col_r1, col_r2, col_r3 = st.columns([1,2,1])
+    with col_r2: st.pyplot(fig3)
+    plt.close()
+
+    # ── Interpretasi ──────────────────────────────────────────────────────
+    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
+    st.markdown("**📖 Interpretasi Hasil**")
+    meta = eval_results["_meta"]
+    st.markdown(f"Evaluasi dilakukan pada **{meta['n_users_evaluated']} user** dengan ground truth threshold **combined_score ≥ {meta['gt_threshold']}**.")
+
+    cf_ndcg = eval_results["CF"][5]["ndcg"]
+    cb_ndcg = eval_results["CB"][5]["ndcg"]
+    rnd_ndcg= eval_results["Random"][5]["ndcg"]
+    improvement = (cf_ndcg - cb_ndcg) / cb_ndcg * 100
+
+    col_i1, col_i2 = st.columns(2)
+    with col_i1:
+        st.info(f"🏆 **CF unggul {improvement:.1f}%** di NDCG@5 dibanding CB ({cf_ndcg:.3f} vs {cb_ndcg:.3f}). Collaborative filtering lebih baik karena memanfaatkan pola interaksi komunitas.")
+        st.success(f"✅ **Kedua model jauh di atas Random** (NDCG {rnd_ndcg:.3f}) — membuktikan bahwa sistem rekomendasi ini memberikan nilai nyata.")
+    with col_i2:
+        st.warning("⚠️ **Coverage CB & CF rendah (26.9%)** — hanya seperempat katalog yang pernah direkomendasikan. Ini area pengembangan untuk meningkatkan eksplorasi.")
+        st.info("🎯 **Diversity CF (0.66) > CB (0.60)** di K=5 — CF menghasilkan rekomendasi yang lebih beragam antar kategori.")

@@ -1,0 +1,110 @@
+{
+  "CB": {
+    "3": {
+      "precision": 0.26,
+      "recall": 0.2282,
+      "f1": 0.228,
+      "ndcg": 0.2779,
+      "diversity": 0.46
+    },
+    "5": {
+      "precision": 0.232,
+      "recall": 0.3178,
+      "f1": 0.254,
+      "ndcg": 0.3001,
+      "diversity": 0.596
+    },
+    "10": {
+      "precision": 0.184,
+      "recall": 0.485,
+      "f1": 0.2566,
+      "ndcg": 0.372,
+      "diversity": 0.6776
+    }
+  },
+  "CF": {
+    "3": {
+      "precision": 0.45,
+      "recall": 0.408,
+      "f1": 0.4029,
+      "ndcg": 0.5098,
+      "diversity": 0.4467
+    },
+    "5": {
+      "precision": 0.404,
+      "recall": 0.5745,
+      "f1": 0.4472,
+      "ndcg": 0.5511,
+      "diversity": 0.658
+    },
+    "10": {
+      "precision": 0.33,
+      "recall": 0.9365,
+      "f1": 0.466,
+      "ndcg": 0.7056,
+      "diversity": 0.8253
+    }
+  },
+  "Random": {
+    "3": {
+      "precision": 0.0967,
+      "recall": 0.0766,
+      "f1": 0.0824,
+      "ndcg": 0.0944,
+      "diversity": 0.8533
+    },
+    "5": {
+      "precision": 0.078,
+      "recall": 0.1109,
+      "f1": 0.0852,
+      "ndcg": 0.1052,
+      "diversity": 0.853
+    },
+    "10": {
+      "precision": 0.077,
+      "recall": 0.2161,
+      "f1": 0.108,
+      "ndcg": 0.1566,
+      "diversity": 0.8673
+    }
+  },
+  "Popularity": {
+    "3": {
+      "precision": 0.2733,
+      "recall": 0.2324,
+      "f1": 0.2374,
+      "ndcg": 0.2973,
+      "diversity": 0.6667
+    },
+    "5": {
+      "precision": 0.318,
+      "recall": 0.4611,
+      "f1": 0.3547,
+      "ndcg": 0.3897,
+      "diversity": 0.6
+    },
+    "10": {
+      "precision": 0.294,
+      "recall": 0.8159,
+      "f1": 0.4133,
+      "ndcg": 0.5485,
+      "diversity": 0.7778
+    }
+  },
+  "_coverage": {
+    "CB": 0.2692,
+    "CF": 0.2692,
+    "Random": 1.0,
+    "Popularity": 0.0577
+  },
+  "_meta": {
+    "n_users_evaluated": 100,
+    "gt_threshold": 0.6,
+    "k_values": [
+      3,
+      5,
+      10
+    ],
+    "n_actions": 52
+  }
+}
