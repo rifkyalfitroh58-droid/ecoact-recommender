@@ -13,8 +13,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 users        = pd.read_csv(os.path.join(BASE_DIR, "data", "users.csv"))
-actions      = pd.read_csv(os.path.join(BASE_DIR, "data", "actions_processed.csv"))
 interactions = pd.read_csv(os.path.join(BASE_DIR, "data", "interactions.csv"))
+_v14 = os.path.join(BASE_DIR, "data", "actions_v14.csv")
+_v10 = os.path.join(BASE_DIR, "data", "actions_processed.csv")
+actions = pd.read_csv(_v14 if os.path.exists(_v14) else _v10)
 
 USER_IDS   = users["user_id"].tolist()
 ACTION_IDS = actions["action_id"].tolist()
@@ -118,7 +120,11 @@ def cf_recommend(user_profile: dict, top_n: int = 3, k_neighbors: int = 20, env_
             "action_id"             : aid,
             "nama_aksi"             : act["nama_aksi"],
             "kategori"              : act["kategori"],
+            "sub_kategori"          : act.get("sub_kategori", ""),
             "co2_hemat_kg_per_bulan": act["co2_hemat_kg_per_bulan"],
+            "kesulitan"             : act.get("kesulitan", ""),
+            "biaya"                 : act.get("biaya", ""),
+            "waktu"                 : act.get("waktu", ""),
             "cf_score"              : round(cf_scores.get(aid, 0.0) * 100, 1),
         })
 
